@@ -1,0 +1,13 @@
+# mac
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Data（生データは除外推奨。必要なサンプルだけは除外を外す）
+data/*.csv
+data/*.json
+!data/.gitkeep
