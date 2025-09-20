@@ -193,14 +193,113 @@ while True:                                                             # 終了
         print("1 / 2 / 3 のいずれかを入力してください。")                    # 入力ミスへの案内
 
 
-# ==========  ===========
+# ========== 型の練習1 ===========
+
+import os
+import csv
+import json
+from datetime import datetime, date
+
+def load_csv(path: str) -> dict[str, str]:
+    out: dict[str, str] = {}
+    with open(path, "r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            name = (row.get("name") or "").strip()
+            iso = (row.get("date_iso") or "").strip()
+            if name and iso:
+                out[name] = iso
+    return out
+
+def save_csv(records: dict[str, str], path: str) -> None:
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["name", "date_iso"])
+        for name in sorted(records):
+            w.writerow([name, records[name]])
+
+def save_json(records: dict[str, str], path: str) -> None:
+    rows = [{"name": n, "date_iso": records[n]} for n in sorted(records)]
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(rows, f, ensure_ascii=False, indent=2)
+
+def days_between(iso_a: str, iso_b: str) -> int:
+    a = datetime.strptime(iso_a, "%Y-%m-%d").date()
+    b = datetime.strptime(iso_b, "%Y-%m-%d").date()
+    return (b - a).days
+
+
+# ========== 型の練習2 ===========
+
+import os
+import csv
+import json
+from datetime import datetime, date
+
+def load_csv(path: str) -> dict[str, str]:
+    out: dict[str, str] = {}
+    with open(path, "r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            name = (row.get("name") or "").strip()
+            iso = (row.get("date_iso") or "").strip()
+            if name and iso:
+                out[name] = iso
+    return out
+
+def save_csv(records: dict[str, str], path: str) -> None:
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["name", "date_iso"])
+        for name in sorted(records):
+            writer.writerow([name, records[name]])
+
+def save_json(records: dict[str, str], path: str) -> None:
+    rows = [{"name": n, "date_iso": records[n]} for n in sorted(records)]
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(rows, f, ensure_ascii=False, indent=2)
+
+def days_between(iso_a: str, iso_b: str) -> int:
+    a = datetime.strptime(iso_a, "%Y-%m-%d").date()
+    b = datetime.strptime(iso_b, "%Y-%m-%d").date()
+    return (b - a).days
 
 
 
+# ========== 型の練習3 ===========
+
+import os
+import csv
+import json
+from datetime import datetime, date
+
+def load_csv(path: str) -> dict[str, str]:                              # 役割: CSV(列: name,date_iso)を読み、{name: date_iso} の辞書で返す
+    out: dict[str, str] = {}                                            # 返却用の空辞書を用意（変数名 out: “出力結果”の意味で覚えやすい）
+    with open(path, "r", encoding="utf-8", newline="") as f:            # ファイルを読み込みモードで開く（UTF-8/改行崩れ防止）
+        reader = csv.DictReader(f)                                      # 1行を {"name": "...", "date_iso": "..."} の辞書として受け取れる“読み手”
+        for row in reader:                                              # CSVの各行を1件ずつ処理
+            name = (row.get("name") or "").strip()                      # 列nameを安全に取得（欠損は""に）→前後空白除去（入力ブレ対策）
+            iso = (row.get("date_iso") or "").strip()                   # 列date_isoも同様に取得→空白除去（常に文字列で扱うのがポイント）
+            if name and iso:                                            # どちらも空でなければ有効データとみなす
+                out[name] = iso                                         # 結果辞書へ登録（同じnameがあれば後勝ち＝上書き仕様）
+    return out                                                          # 取り込み完了。内部表現は {name: "YYYY-MM-DD"} で統一（保存・計算が安定）
+
+def save_csv(records: dict[str, str], path: str) -> None:               # 役割: {name: date_iso} をCSVへヘッダー付きで保存
+    with open(path, "r", encoding="utf-8", newline="") as f:            # 書き込みモード（既存があれば上書き）
+        writer = csv.writer(f)                                          # リストを1行として書き出す“書き手”を用意
+        writer.writerow(["name", "date_iso"])                           # 1行目に列名（ヘッダー）を書いて形式を明示
+        for name in sorted(records):                                    # 並び順を固定（Gitの差分が安定／テストしやすい）
+            writer.writerow([name, records[name]])                      # 1行分を書き込む（値は文字列のまま保存される）
+
+def save_json(records: dict[str, str], path: str) -> None:                  # 役割: {name: date_iso} をJSONへ保存（人が読める整形）
+    rows = [{"name": n, "date_iso": records[n]} for n in sorted(records)]   # JSONの素: 辞書の配列へ変換（順序固定）
+    with open(path, "w", encoding="utf-8") as f:                            # JSONはテキストなので newline="" は不要
+        json.dump(rows, f, ensure_ascii=False, indent=2)                    # ensure_ascii=False: 日本語そのまま／indent=2: 見やすく整形
+
+def days_between(iso_a: str, iso_b: str) -> int:                            # 役割: 2つの日付文字列の差（b - a）の“日数”を整数で返す
+    a = datetime.strptime(iso_a, "%Y-%m-%d").date()                         # 文字列→日付型に変換（%Y-%m-%d を明示して入力ミスを検出）
+    b = datetime.strptime(iso_b, "%Y-%m-%d").date()                         # 同上。date() で時刻情報を切り落として“日”単位にそろえる
+    return (b - a).days                                                     # datetime.date 同士の差分は timedelta。daysで“日数”だけ取り出す（負値なら“未来までの残り日数”）
 
 
-# ==========  ===========
-
-
-
-# ==========  ===========
+# ========== 型の練習4 ===========
