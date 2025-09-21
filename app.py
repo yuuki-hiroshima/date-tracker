@@ -544,47 +544,180 @@
 # assert days_between("2025-09-20", "2025-09-10") == -10
 # assert days_between("2025-01-01", "2025-01-01") == 0
 
-# ========== 型の練習8 ===========
+# ========== 型の練習8 → 改修 ===========
 
+# import os
+# import csv
+# import json
+# from datetime import datetime
+# from json import JSONDecodeError
+
+# DATE_FMT = "%Y-%m-%d"                       # 追記：日付の標準フォーマットを一元管理。将来 "%Y/%m/%d" に変えたくなった時、1か所の修正で全体が追従します。
+
+# def is_iso_date(iso: str) -> bool:
+#     try:
+#         datetime.strptime(iso, DATE_FMT)
+#         return True
+#     except ValueError:
+#         return False
+
+# def load_csv(path: str) -> dict[str, str]:
+#     """CSV(name,date_iso)を読み {name: 'YYYY-MM-DD'} を返す。
+#     ファイルがない/形式不正は空辞書で返す（落とさない方針）。"""
+#     out: dict[str, str] = {}
+#     try:
+#         with open(path, "r", encoding="utf-8", newline="") as f:
+#             reader = csv.DictReader(f)
+#             for row in reader:
+#                 name = (row.get("name") or "").strip()
+#                 iso = (row.get("date_iso") or "").strip()
+#                 if not (name and iso and is_iso_date(iso)):
+#                     continue
+#                 out[name] = iso
+#     except FileNotFoundError:
+#         return {}
+#     return out
+
+# def load_json(path: str) -> dict[str, str]:
+#     """JSON(形: [{'name':..., 'date_iso':'YYYY-MM-DD'}])を読み、 {name: 'YYYY-MM-DD'} を返す。
+#     ファイルがない/形式不正は空辞書で返す（落とさない方針）。"""
+#     out: dict[str, str] = {}
+#     try:
+#         with open(path, "r", encoding="utf-8") as f:
+#             data = json.load(f)
+#             if isinstance(data, dict):
+#                  data = [data]
+#     except FileNotFoundError:
+#         return {}
+#     except JSONDecodeError:
+#         return {}
+#     if not isinstance(data, list):              # 追記：想定は“辞書のリスト”
+#         return out                              # 形が違えば空で返して安全側に倒す
+#     for row in data:
+#         name = (row.get("name") or "").strip()
+#         iso = (row.get("date_iso") or "").strip()
+#         if not (name and iso and is_iso_date(iso)):
+#             continue
+#         out[name] = iso
+#     return out
+
+# def save_csv(records: dict[str, str], path: str) -> None:
+#     dirpath = os.path.dirname(path) or "."          # 保存先のフォルダ名を取り出す（無ければカレント）
+#     os.makedirs(dirpath, exist_ok=True)             # フォルダが無い時だけ作る（既にあれば何もしない）
+
+#     with open(path, "w", encoding="utf-8", newline="") as f:
+#         writer = csv.writer(f)
+#         writer.writerow(["name", "date_iso"])
+#         for name in sorted(records):
+#             writer.writerow([name, records[name]])
+
+# def save_json(records: dict[str, str], path: str) -> None:
+#     dirpath = os.path.dirname(path) or "."          # 保存先のフォルダ名を取り出す（無ければカレント）
+#     os.makedirs(dirpath, exist_ok=True)             # フォルダが無い時だけ作る（既にあれば何もしない）
+
+#     rows = [{"name": n, "date_iso": records[n]} for n in sorted(records)]
+#     with open(path, "w", encoding="utf-8") as f:
+#         json.dump(rows, f, ensure_ascii=False, indent=2)
+
+# def days_between(iso_a: str, iso_b: str) -> int:
+#     a = datetime.strptime(iso_a, DATE_FMT).date()
+#     b = datetime.strptime(iso_b, DATE_FMT).date()
+#     return (b - a).days
+
+# assert days_between("2025-01-01", "2025-01-11") == 10
+# assert days_between("2025-12-31", "2026-01-01") == 1
+# assert days_between("2025-10-21", "2025-10-01") == -20
+# assert days_between("2025-02-28", "2025-03-01") == 1
+
+# # 1) JSON往復
+# sample = {"フィルター清掃": "2025-08-01", "電池交換": "2025-09-10"}
+# save_json(sample, "data/test.json")
+# assert load_json("data/test.json") == sample
+
+# # 2) CSV往復
+# save_csv(sample, "data/test.csv")
+# assert load_csv("data/test.csv") == sample
+
+# # 3) 日数（すでに合格ですがゼロ日も追加）
+# assert days_between("2025-01-01", "2025-01-01") == 0
+
+# # ファイル不存在でも空辞書が返る（落ちない）
+# assert load_csv("data/does_not_exist.csv") == {}
+# assert load_json("data/does_not_exist.json") == {}
+
+# # 新しいサブフォルダでも保存できるか（ディレクトリ作成の確認）
+# nested = "data/subdir/test.csv"
+# save_csv({"A": "2025-01-01"}, nested)
+# assert os.path.exists(nested)
+
+# nested_json = "data/subdir/test.json"
+# save_json({"B": "2025-02-02"}, nested_json)
+# assert os.path.exists(nested_json)
+
+# print(sample)
+
+
+# ========== argparseでコマンドで使えるツール化 ===========
+
+import os
 import csv
 import json
 from datetime import datetime
+from json import JSONDecodeError
+
+DATE_FMT = "%Y-%m-%d"               
+
+def is_iso_date(iso: str) -> bool:
+    try:
+        datetime.strptime(iso, DATE_FMT)
+        return True
+    except ValueError:
+        return False
 
 def load_csv(path: str) -> dict[str, str]:
+    """CSV(name,date_iso)を読み {name: 'YYYY-MM-DD'} を返す。
+    ファイルがない/形式不正は空辞書で返す（落とさない方針）。"""
     out: dict[str, str] = {}
-    with open(path, "r", encoding="utf-8", newline="") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            name = (row.get("name") or "").strip()
-            iso = (row.get("date_iso") or "").strip()
-            if not (name and iso):
-                continue
-            try:
-                datetime.strptime(iso, "%Y-%m-%d")
-            except ValueError:
-                continue
-            out[name] = iso
+    try:
+        with open(path, "r", encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                name = (row.get("name") or "").strip()
+                iso = (row.get("date_iso") or "").strip()
+                if not (name and iso and is_iso_date(iso)):
+                    continue
+                out[name] = iso
+    except FileNotFoundError:
+        return {}
     return out
 
 def load_json(path: str) -> dict[str, str]:
+    """JSON(形: [{'name':..., 'date_iso':'YYYY-MM-DD'}])を読み、 {name: 'YYYY-MM-DD'} を返す。
+    ファイルがない/形式不正は空辞書で返す（落とさない方針）。"""
     out: dict[str, str] = {}
-    with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-        if not isinstance(data, list):              # 追記：想定は“辞書のリスト”
-            return out                              # 形が違えば空で返して安全側に倒す
-        for row in data:
-            name = (row.get("name") or "").strip()
-            iso = (row.get("date_iso") or "").strip()
-            if not (name and iso):
-                continue
-            try:
-                datetime.strptime(iso, "%Y-%m-%d")
-            except ValueError:
-                continue
-            out[name] = iso
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            if isinstance(data, dict):
+                 data = [data]
+    except FileNotFoundError:
+        return {}
+    except JSONDecodeError:
+        return {}
+    if not isinstance(data, list):              
+        return out                             
+    for row in data:
+        name = (row.get("name") or "").strip()
+        iso = (row.get("date_iso") or "").strip()
+        if not (name and iso and is_iso_date(iso)):
+            continue
+        out[name] = iso
     return out
 
 def save_csv(records: dict[str, str], path: str) -> None:
+    dirpath = os.path.dirname(path) or "."         
+    os.makedirs(dirpath, exist_ok=True)             
+
     with open(path, "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["name", "date_iso"])
@@ -592,29 +725,15 @@ def save_csv(records: dict[str, str], path: str) -> None:
             writer.writerow([name, records[name]])
 
 def save_json(records: dict[str, str], path: str) -> None:
+    dirpath = os.path.dirname(path) or "."         
+    os.makedirs(dirpath, exist_ok=True)            
+
     rows = [{"name": n, "date_iso": records[n]} for n in sorted(records)]
     with open(path, "w", encoding="utf-8") as f:
         json.dump(rows, f, ensure_ascii=False, indent=2)
 
 def days_between(iso_a: str, iso_b: str) -> int:
-    a = datetime.strptime(iso_a, "%Y-%m-%d").date()
-    b = datetime.strptime(iso_b, "%Y-%m-%d").date()
+    a = datetime.strptime(iso_a, DATE_FMT).date()
+    b = datetime.strptime(iso_b, DATE_FMT).date()
     return (b - a).days
 
-assert days_between("2025-01-01", "2025-01-11") == 10
-assert days_between("2025-12-31", "2026-01-01") == 1
-assert days_between("2025-10-21", "2025-10-01") == -20
-
-# 1) JSON往復
-sample = {"フィルター清掃": "2025-08-01", "電池交換": "2025-09-10"}
-save_json(sample, "data/test.json")
-assert load_json("data/test.json") == sample
-
-# 2) CSV往復
-save_csv(sample, "data/test.csv")
-assert load_csv("data/test.csv") == sample
-
-# 3) 日数（すでに合格ですがゼロ日も追加）
-assert days_between("2025-01-01", "2025-01-01") == 0
-
-print(sample)
