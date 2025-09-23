@@ -7,7 +7,23 @@ __pycache__/
 .venv/
 venv/
 
-# Data（生データは除外推奨。必要なサンプルだけは除外を外す）
+# Jupyter
+.ipynb_checkpoints/
+
+# Node（入れてなくても保険）
+node_modules/
+
+# Build/IDE
+dist/
+build/
+*.egg-info/
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Data（生データは除外推奨。必要なサンプルだけは後で個別に許可）
 data/*.csv
 data/*.json
 !data/.gitkeep

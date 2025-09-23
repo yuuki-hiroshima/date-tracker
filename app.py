@@ -1,5 +1,5 @@
 
-# ========== 完成イメージ ==========
+# ========== 完成イメージ（登録機能を追加） ==========
 
 # 入力：
 #     ・コマンド引数で受け取る
@@ -21,7 +21,7 @@
 # 補足：
 #     前後だけ削除（strip()）にするか、中の空白も全削除にするか（"".join(s.split())）はお好み。
 
-# ========== 擬似コード ==========
+# ========== 擬似コード（登録機能を追加） ==========
 
 # パスの固定：
 #     json_path = "data/event_log.json" / csv_path = "data/event_log.csv"
@@ -41,56 +41,176 @@
 #     登録：<NAME> = <DATE> と1行表示。
 
 
-# ========== Pythonコード ==========
+# ========== Pythonコード（登録機能を追加） ==========
 
-import argparse  # コマンドライン引数を解析する標準ライブラリ
-# コア関数は tracker_core から再利用（CLIとロジックを分離）
-from tracker_core import is_iso_date, load_json, save_json, save_csv
+# import argparse  # コマンドライン引数を解析する標準ライブラリ
+# # コア関数は tracker_core から再利用（CLIとロジックを分離）
+# from tracker_core import is_iso_date, load_json, save_json, save_csv
 
-JSON_PATH = "data/event_log.json"  # JSONの保存先パス（固定）
-CSV_PATH  = "data/event_log.csv"   # CSVの保存先パス（固定）
+# JSON_PATH = "data/event_log.json"  # JSONの保存先パス（固定）
+# CSV_PATH  = "data/event_log.csv"   # CSVの保存先パス（固定）
 
-def main():  # プログラムの入口
-    parser = argparse.ArgumentParser(  # 引数パーサを1つ作る
-        description="date-tracker フェーズ1: 追加（--add NAME DATE）のみ対応"
-    )
-    parser.add_argument(               # --add を定義
-        "--add",
-        nargs=2,                       # ← 変更点：2個の値（NAME, DATE）を受け取る
-        metavar=("NAME", "DATE"),      # ヘルプ表示用の見出し
-        help="1件登録: NAME と YYYY-MM-DD を指定"
-    )
-    args = parser.parse_args()         # 実行時の引数を解析
+# def main():  # プログラムの入口
+#     parser = argparse.ArgumentParser(  # 引数パーサを1つ作る
+#         description="date-tracker フェーズ1: 追加（--add NAME DATE）のみ対応"
+#     )
+#     parser.add_argument(               # --add を定義
+#         "--add",
+#         nargs=2,                       # ← 変更点：2個の値（NAME, DATE）を受け取る
+#         metavar=("NAME", "DATE"),      # ヘルプ表示用の見出し
+#         help="1件登録: NAME と YYYY-MM-DD を指定"
+#     )
+#     args = parser.parse_args()         # 実行時の引数を解析
 
-    if not args.add:                   # --add が無ければ使い方を表示して終了
+#     if not args.add:                   # --add が無ければ使い方を表示して終了
+#         parser.print_help()
+#         return
+
+#     name, date = args.add              # ["電池交換", "2025-10-01"] → 2変数に展開
+#     name = name.strip()                # 前後の空白除去（入力ゆらぎ対策）
+#     date = date.strip()                # 同上
+
+#     if not name:                       # 名前が空 → エラー表示して終了
+#         print("エラー: 名前を指定してください。")
+#         return
+
+#     if not is_iso_date(date):          # 日付が YYYY-MM-DD 形式でない → エラー表示して終了
+#         print("エラー: 日付は YYYY-MM-DD の形式で入力してください。処理を中止します。")
+#         return
+
+#     records = load_json(JSON_PATH)     # 既存データを読み込む（無ければ {} が返る設計）
+#     records[name] = date               # 上書き登録（同名があれば更新）
+#     save_json(records, JSON_PATH)      # JSONへ保存（フォルダ作成は save_* 内で実施済み）
+#     save_csv(records, CSV_PATH)        # CSVへ保存（並び順固定）
+
+#     print(f"登録：{name} = {date}")    # 結果を1行表示
+
+# if __name__ == "__main__":             # スクリプト直実行時のみ main() を走らせる
+#     main()
+
+# ========== 完成イメージ（経過日の表示を追加） ==========
+
+# 起動方法
+# 	•	python3 app.py --elapsed <NAME> --on <YYYY-MM-DD>
+
+# 入力
+# 	•	<NAME> と <DATE> は必須。いずれも .strip()。
+# 	•	<DATE> は YYYY-MM-DD 形式であること（不正ならエラー終了）。
+
+# 処理
+# 	1.	records = load_json(JSON_PATH)（無ければ {}）
+# 	2.	record_date = records.get(NAME)
+# 	•	取得できなければ："<NAME>" の登録が見つかりません。 と表示して終了
+# 	3.	d = days_between(record_date, DATE)（指定日 − 登録日）
+
+# 出力（3パターン）
+# 	•	d > 0：データ内の日付から、{d}日が経過しました。
+# 	•	d == 0：今日はデータ内の日付（当日）です。
+# 	•	d < 0：データ内の日付まで、あと{abs(d)}日です。
+
+# エラー対応
+# 	•	引数不足：ヘルプ表示
+# 	•	日付形式エラー：エラー: 日付は YYYY-MM-DD 形式で入力してください。
+# 	•	NAME 未登録："<NAME>" の登録が見つかりません。
+
+# 保存
+# 	•	なし（フェーズ2は表示のみ。データは変更しない）
+
+# 例（動作イメージ）
+# 	•	python3 app.py --elapsed 電池交換 --on 2025-10-11
+# → データ内の日付から、10日が経過しました。
+# 	•	python3 app.py --elapsed 電池交換 --on 2025-10-01
+# → 今日はデータ内の日付（当日）です。
+# 	•	python3 app.py --elapsed 電池交換 --on 2025-09-25
+# → データ内の日付まで、あと6日です。
+# 	•	python3 app.py --elapsed フィルター清掃 --on 2025-10-01
+# → "フィルター清掃" の登録が見つかりません。
+
+# ========== 擬似コード（経過日の表示を追加） ==========
+
+# 入力：
+#     ・--elapsed NAME --on DATE を受け取る（どちらも必須／strip()）
+# 	・NAME = (--elapsed の値).strip()
+# 	・DATE = (--on の値).strip()
+# 	・どちらか欠けていれば ヘルプを表示して終了。
+#     ・DATE は strip 後 に is_iso_date(DATE) で検証（NGならエラー表示→終了）。
+
+# 処理：
+#     ・DATE は is_iso_date(DATE) で検証（NGなら終了）
+#     ・records = load_json(JSON_PATH) → record_date = records.get(NAME) をまず取り出し、未登録なら終了。
+#     ・見つからなければメッセージ→終了／見つかれば d = days_between(record_date, DATE)
+
+# 出力：
+# 	・	【変更】3パターンをこの順で分岐
+# 	1.	d > 0：データ内の日付から、{d}日が経過しました。
+# 	2.	d == 0：今日はデータ内の日付（当日）です。
+# 	3.	d < 0：データ内の日付まで、あと{abs(d)}日です。
+
+# エラー対応：
+#     ・引数不足：ヘルプ表示→終了（戻り値は意識しなくてOK）
+#     ・日付形式エラー：エラー: 日付は YYYY-MM-DD 形式で入力してください。
+#     ・NAME 未登録："<NAME>" の登録が見つかりません。
+
+
+
+# ========== Pythonコード（経過日の表示を追加） ==========
+
+import argparse
+from tracker_core import is_iso_date, load_json, days_between
+
+JSON_PATH = "data/event_log.json"
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="フェーズ2: 経過日の表示（--elapsed NAME --on YYYY-MM-DD）"
+        )
+    
+    parser.add_argument("--elapsed", metavar="NAME", help="登録名")
+    parser.add_argument("--on", metavar="DATE", help="基準日（YYYY-MM-DD）")
+
+    args = parser.parse_args()
+    name = (args.elapsed or "").strip()
+    date = (args.on or "").strip()
+
+    if not name or not date:
         parser.print_help()
         return
-
-    name, date = args.add              # ["電池交換", "2025-10-01"] → 2変数に展開
-    name = name.strip()                # 前後の空白除去（入力ゆらぎ対策）
-    date = date.strip()                # 同上
-
-    if not name:                       # 名前が空 → エラー表示して終了
-        print("エラー: 名前を指定してください。")
+    
+    if not is_iso_date(date):
+        print("エラー: 日付は YYYY-MM-DD 形式で入力してください。処理を中止します。")
         return
 
-    if not is_iso_date(date):          # 日付が YYYY-MM-DD 形式でない → エラー表示して終了
-        print("エラー: 日付は YYYY-MM-DD の形式で入力してください。処理を中止します。")
+    records = load_json(JSON_PATH)
+    records_date = records.get(name)
+
+    if not records_date:
+        print(f'"{name}" の登録が見つかりません。')
         return
+    
+    d = days_between(records_date,date)
 
-    records = load_json(JSON_PATH)     # 既存データを読み込む（無ければ {} が返る設計）
-    records[name] = date               # 上書き登録（同名があれば更新）
-    save_json(records, JSON_PATH)      # JSONへ保存（フォルダ作成は save_* 内で実施済み）
-    save_csv(records, CSV_PATH)        # CSVへ保存（並び順固定）
+    if d > 0:
+        print(f"データ内の日付から、{d}日が経過しました。")
+    elif d == 0:
+        print("今日はデータ内の日付（当日）です。")
+    elif d < 0:
+        print(f"データ内の日付まで、あと{abs(d)}日です。")
 
-    print(f"登録：{name} = {date}")    # 結果を1行表示
-
-if __name__ == "__main__":             # スクリプト直実行時のみ main() を走らせる
+if __name__ == "__main__":
     main()
 
+
+
 # ==========  ==========
 
 # ==========  ==========
 
+# ==========  ==========
 
+# ==========  ==========
 
+# ==========  ==========
+
+# ==========  ==========
+
+# ==========  ==========
