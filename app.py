@@ -155,57 +155,125 @@
 
 # ========== Pythonコード（経過日の表示を追加） ==========
 
-import argparse
-from tracker_core import is_iso_date, load_json, days_between
+# import argparse
+# from tracker_core import is_iso_date, load_json, days_between
 
-JSON_PATH = "data/event_log.json"
+# JSON_PATH = "data/event_log.json"
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="フェーズ2: 経過日の表示（--elapsed NAME --on YYYY-MM-DD）"
-        )
+# def main():
+#     parser = argparse.ArgumentParser(
+#         description="フェーズ2: 経過日の表示（--elapsed NAME --on YYYY-MM-DD）"
+#         )
     
-    parser.add_argument("--elapsed", metavar="NAME", help="登録名")
-    parser.add_argument("--on", metavar="DATE", help="基準日（YYYY-MM-DD）")
+#     parser.add_argument("--elapsed", metavar="NAME", help="登録名")
+#     parser.add_argument("--on", metavar="DATE", help="基準日（YYYY-MM-DD）")
 
-    args = parser.parse_args()
-    name = (args.elapsed or "").strip()
-    date = (args.on or "").strip()
+#     args = parser.parse_args()
+#     name = (args.elapsed or "").strip()
+#     date = (args.on or "").strip()
 
-    if not name or not date:
-        parser.print_help()
-        return
+#     if not name or not date:
+#         parser.print_help()
+#         return
     
-    if not is_iso_date(date):
-        print("エラー: 日付は YYYY-MM-DD 形式で入力してください。処理を中止します。")
-        return
+#     if not is_iso_date(date):
+#         print("エラー: 日付は YYYY-MM-DD 形式で入力してください。処理を中止します。")
+#         return
 
-    records = load_json(JSON_PATH)
-    records_date = records.get(name)
+#     records = load_json(JSON_PATH)
+#     records_date = records.get(name)
 
-    if not records_date:
-        print(f'"{name}" の登録が見つかりません。')
-        return
+#     if not records_date:
+#         print(f'"{name}" の登録が見つかりません。')
+#         return
     
-    d = days_between(records_date,date)
+#     d = days_between(records_date,date)
 
-    if d > 0:
-        print(f"データ内の日付から、{d}日が経過しました。")
-    elif d == 0:
-        print("今日はデータ内の日付（当日）です。")
-    elif d < 0:
-        print(f"データ内の日付まで、あと{abs(d)}日です。")
+#     if d > 0:
+#         print(f"データ内の日付から、{d}日が経過しました。")
+#     elif d == 0:
+#         print("今日はデータ内の日付（当日）です。")
+#     elif d < 0:
+#         print(f"データ内の日付まで、あと{abs(d)}日です。")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
 
 
-# ==========  ==========
+# ========== 完成イメージ（一覧表示） ==========
 
-# ==========  ==========
+# 目標
+# 	python3 app.py --list で「名前: YYYY-MM-DD」を名前順に表示
 
-# ==========  ==========
+# 入力
+# 	--list（引数なし）を受け付ける
+#   --list が指定されていないときは ヘルプを表示して終了（他のオプションとの同時指定も今回は非対応にして終了でOK）。
+
+# 処理
+#   records = load_json(JSON_PATH)で読み込み
+#   load_json(JSON_PATH) はファイル無し／壊れたJSONなら 空辞書 {} を返す設計になっている
+#   空なら「登録はありません。」と表示
+#   sortedを使って名前順（昇順）に並び替え
+
+# 出力
+#   0件 → 「登録はありません。」
+#   1件以上 → for name in sorted(records): print(f"{name}: {records[name]}")
+
+
+# ========== 擬似コード（一覧表示） ==========
+
+# 入力
+#     python3 app.py --list
+#     parser.add_argument("--list", action="store_true", help="登録一覧を表示")
+#     if not args.list: parser.print_help(); return（他オプションと同時指定を避けるなら、先に if args.list: ...; return の早期終了でもOK）
+
+# 処理
+#     records = load_json(JSON_PATH)
+#     if not records: print("登録はありません。");
+#     return 終了
+
+# 出力
+#     print("=== 登録一覧 ===")
+#     for name in sorted(records): で 名前昇順に print(f"{name}: {records[name]}")
+#     print(f"合計 {len(records)} 件")
+
+# ========== Pythonコード（一覧表示） ==========
+
+import argparse                     # コマンド引数を扱う標準ライブラリを読み込む
+from tracker_core import load_json   # JSON読み込み関数（壊れていても空{}を返す設計）
+
+JSON_PATH = "data/event_log.json"    # データの保存場所（相対パス）
+
+def main():                          # CLIの入口となる関数
+    parser = argparse.ArgumentParser(    # 引数パーサを1つ作成
+        description="--list で登録一覧を表示します"
+    )
+    parser.add_argument(                 # --list は値を持たないフラグ
+        "--list",
+        action="store_true",
+        help="登録一覧を表示"
+    )
+    args = parser.parse_args()           # 実行時引数を解析
+
+    if not args.list:                    # --list が指定されていない場合
+        parser.print_help()              # 使い方を表示して
+        return                           # 終了（CLIなのでループはしない）
+
+    records = load_json(JSON_PATH)       # データを読み込む（無ければ {}）
+
+    if not records:                      # 0件ならメッセージを出して終了
+        print("登録はありません。")
+        return
+
+    print("=== 登録一覧 ===")            # 見出し
+    for name in sorted(records):         # 名前の昇順で並べて
+        print(f"{name}: {records[name]}")# 1行ずつ「名前: 日付」を表示
+
+    print(f"合計 {len(records)} 件")     # ループの外で合計件数を1回だけ表示
+
+if __name__ == "__main__":               # スクリプト直実行時のみ
+    main()                               # main() を起動
 
 # ==========  ==========
 
