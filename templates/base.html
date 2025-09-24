@@ -1,0 +1,53 @@
+<!-- AIが出力 → 書き写し -->
+
+<!doctype heml>
+<heml lang="ja">
+    <head>
+        <meta charest="utf-8">
+        <title>date-tracker</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            body { font-family: system-ui, sans-serif; margin: 24px; }
+            header, footer { margin-bottom: 16px; color: #555; }
+            nav a { margin-right: 12px; }
+            .flash { padding: 10px; border-radius: 6px; margin: 8px 0; }
+            .flash.error { background: #ffe5e5; color: #9a0000; border: 1px solid #ffb3b3; }
+            .flash.success { background: #e9ffe9; color: #0a7a0a; border: 1px solid #a6e3a6; }
+            .flash.info { background: #eaf3ff; color: #0a549a; border: 1px solid #b9d7ff; }
+            table { border-collapse: collapse; width: 100%; }
+            th, td { border: 1px solid #ddd; padding: 8px; }
+            th { background: #f5f5f5; text-align: left; }
+            form label { display: block; margin: 12px 0 4px; }
+            input[type="text"] { width: 260px; padding: 6px; }
+            .btn { display: inline-block; padding: 8px 12px; margin: 6px 8px 0 0; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; color: #333; }
+            .btn.primary { background: #f0f7ff; border-color: #a3c8ff; }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>date-tracker</h1>
+            <nav>
+                <a class="btn" href="{{ url_for('index') }}">トップ</a>
+                <a class="btn" href="{{ url_for('add') }}">登録</a>
+                <a class="btn" href="{{ url_for('list_view') }}">一覧</a>
+                <a class="btn" href="{{ url_for('elapsed') }}">経過日</a>
+            </nav>
+        </header>
+
+        <!-- フラッシュメッセージ -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ messages }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 子テンプレートをここに差し込む -->>
+        {% block content %}{% endblock %}
+
+        <footer>
+            <small>&copy; {{ 2025 }} date-tracker</small>
+        </footer>
+    </body>
+</heml>

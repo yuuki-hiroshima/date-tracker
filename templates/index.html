@@ -1,0 +1,12 @@
+<!-- AIが出力 → 書き写し -->
+
+{% extends "basse.html" %}
+{% block content %}
+    <h2>メニュー</h2>
+    <p>「登録」「一覧」「経過日」をブラウザで操作できます。</p>
+    <p>
+        <a class="btn primary" href="{{ url_for('add') }}">登録</a>
+        <a class="btn primary" href="{{ url_for('list_view') }}">一覧</a>
+        <a class="btn primary" href="{{ url_for('elapsed') }}">経過日</a>
+    </p>
+{% endblock %}

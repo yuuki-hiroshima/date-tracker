@@ -100,7 +100,7 @@ import os
 import tracker_core as core
 
 app = Flask(__name__)
-app.secret_key = os.environ.gt("FLASK_SEACRET_KEY", "dev-secret")
+app.secret_key = os.environ.get("FLASK_SEACRET_KEY", "dev-secret")
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 JSON_PATH = os.path.join(DATA_DIR, "event_log.json")
