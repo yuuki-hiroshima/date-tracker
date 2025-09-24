@@ -88,6 +88,116 @@
 
 # ========== Pythonコード ==========
 
+# app_web.py
+# ---------------------------------------
+# 役割：Flaskで date-tracker をWeb操作できる最小アプリ
+# 依存：tracker_core.py（既存の入出力・検証・日付差）
+# ---------------------------------------
+
+from __future__ import annotations
+from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+import tracker_core as core
+
+app = Flask(__name__)
+app.secret_key = os.environ.gt("FLASK_SEACRET_KEY", "dev-secret")
+
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+JSON_PATH = os.path.join(DATA_DIR, "event_log.json")
+CSV_PATH = os.path.join(DATA_DIR, "evemt_log.csv")
+
+def ensure_data_dir() -> None:
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+def sanitize_name(text: str) -> str:
+    return text.strip()
+
+def validate_iso(date_text: str) -> bool:
+    return core.is_iso_date(date_text)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    if request.method == "GET":
+        return render_template("add.html")
+    
+    ensure_data_dir()
+    name_raw = request.form.get("name", "")
+    date_iso = request.form.get("date_iso", "")
+    name = sanitize_name(name_raw)
+
+    if not name:
+        flash("名前がからです。", "error")
+        return redirect(url_for("add"))
+    
+    if not validate_iso(date_iso):
+        flash("\"YYYY-MM-DD\" の形式で入力してください。", "error")
+        return redirect(url_for("add"))
+    
+    try:
+        records: dict[str, str] = core.load_json(JSON_PATH)
+        records[name] = date_iso
+        core.save_json(records, JSON_PATH)
+        core.save_csv(records, CSV_PATH)
+    except Exception:
+        flash("保存に失敗しました。もう一度お試しください。", "error")
+        return redirect(url_for("add"))
+    
+    flash(f"「{name}」の登録に成功しました。", "success")
+    return redirect(url_for("index"))
+
+@app.route("/list")
+def list_view():
+    records: dict[str, str] = core.load_json(JSON_PATH)
+    count = len(records)
+    if count == 0:
+        return render_template("list.html", records=None, count=0)
+    
+    sorted_names = sorted(records.keys())
+    rows = [(n, records[n]) for n in sorted_names]
+    return render_template("list.heml", records=rows, count=count)
+
+@app.route("/elapsed", methods=["GET", "POST"])
+def elapsed():
+    if request.method == "GET":
+        return render_template("elapsed.html", result=None)
+    
+    name_raw = request.form.get("name", "")
+    on_date = request.form.get("on_date", "")
+    name = sanitize_name(name_raw)
+
+    if not name:
+        flash("名前が空です。", "error")
+        return redirect(url_for("elapsed"))
+    
+    if not validate_iso(on_date):
+        flash("\"YYYY-MM-DD\" の形式で入力してください。", "error")
+        return redirect(url_for("elapsed"))
+    
+    records: dict[str, str] = core.load_json(JSON_PATH)
+    if name not in records:
+        flash("一致するイベントはありません。", "error")
+        return redirect(url_for("elapsed"))
+    
+    reg_date = records[name]
+    d = core.days_between(reg_date, on_date)
+    if d > 0:
+        result = f"{name} から、{d}日が経過しました。"
+    elif d == 0:
+        result = "今日はデータ内の日付（当日）です。"
+    else:
+        result = f"{name} まで、あと{abs(d)}日です。"
+
+    return render_template("elapsed.html", result=result)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+
 # ==========  ==========
 
 # ==========  ==========
