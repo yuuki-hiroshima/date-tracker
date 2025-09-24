@@ -161,7 +161,7 @@ def list_view():
     
     sorted_names = sorted(records.keys())
     rows = [(n, records[n]) for n in sorted_names]
-    return render_template("list.heml", records=rows, count=count)
+    return render_template("list.html", records=rows, count=count)
 
 @app.route("/elapsed", methods=["GET", "POST"])
 def elapsed():
