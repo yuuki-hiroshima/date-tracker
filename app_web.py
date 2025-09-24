@@ -99,12 +99,15 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 import tracker_core as core
 
-app = Flask(__name__)
+APP_DIR = os.path.dirname(__file__)
+TEMPLATE_DIR = os.path.join(APP_DIR, "templates")
+
+app = Flask(__name__, template_folder=TEMPLATE_DIR)
 app.secret_key = os.environ.get("FLASK_SEACRET_KEY", "dev-secret")
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 JSON_PATH = os.path.join(DATA_DIR, "event_log.json")
-CSV_PATH = os.path.join(DATA_DIR, "evemt_log.csv")
+CSV_PATH = os.path.join(DATA_DIR, "event_log.csv")
 
 def ensure_data_dir() -> None:
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -130,7 +133,7 @@ def add():
     name = sanitize_name(name_raw)
 
     if not name:
-        flash("名前がからです。", "error")
+        flash("名前が空です。", "error")
         return redirect(url_for("add"))
     
     if not validate_iso(date_iso):

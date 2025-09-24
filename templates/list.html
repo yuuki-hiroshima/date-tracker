@@ -18,10 +18,10 @@
                         <td>{{ name }}</td>
                         <td>{{ date_iso }}</td>
                     </tr>
-                {% end for %}
+                {% endfor %}
             </tbody>
         </table>
-        <p>合計 {{ count } 件}</p>
+        <p>合計 {{ count }} 件</p>
     {% endif %}
 
     <p><a class="btn" href="{{ url_for('index') }}">トップへ</a></p>

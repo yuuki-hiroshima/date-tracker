@@ -1,9 +1,9 @@
 <!-- AIが出力 → 書き写し -->
 
-<!doctype heml>
-<heml lang="ja">
+<!doctype html>
+<html lang="ja">
     <head>
-        <meta charest="utf-8">
+        <meta charset="utf-8">
         <title>date-tracker</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
@@ -38,16 +38,16 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ messages }}</div>
+                    <div class="flash {{ category }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
-        <!-- 子テンプレートをここに差し込む -->>
+        <!-- 子テンプレートをここに差し込む -->
         {% block content %}{% endblock %}
 
         <footer>
-            <small>&copy; {{ 2025 }} date-tracker</small>
+            <small>&copy; 2025 date-tracker</small>
         </footer>
     </body>
-</heml>
+</html>

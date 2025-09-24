@@ -3,7 +3,7 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>経過日</h2>
-    <form method="post" action="{{ urt_for('elapsed') }}">
+    <form method="post" action="{{ url_for('elapsed') }}">
         <label for="name">名前</label>
         <input type="text" id="name" name="name" placeholder="例：電池交換">
 
