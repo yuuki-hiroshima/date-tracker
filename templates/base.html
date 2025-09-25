@@ -4,11 +4,11 @@
 <html lang="ja">
     <head>
         <meta charset="utf-8">
-        <title>date-tracker</title>
+        <title>Date-Tracker</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             body { font-family: system-ui, sans-serif; margin: 24px; }
-            header, footer { margin-bottom: 16px; color: #555; }
+            header, footer { margin-bottom: 30px; color: #555; }
             nav a { margin-right: 12px; }
             .flash { padding: 10px; border-radius: 6px; margin: 8px 0; }
             .flash.error { background: #ffe5e5; color: #9a0000; border: 1px solid #ffb3b3; }
@@ -23,7 +23,7 @@
             .btn.primary { background: #f0f7ff; border-color: #a3c8ff; }
             .btn.success { background: #e6f6e6; border-color: #9f8fd2; color: #d7119b; }
             .btn.secondary { background: #f4f4f4; border-color: #cccccc; color: #333333; }
-            .btn.denger { background: #ffecec; border-color: #ffb3b3; color: #a30000; }
+            .btn.danger { background: #ffecec; border-color: #ffb3b3; color: #a30000; }
 
             /* --- table variants --- */
             .table { border-collapse: collapse; width: 100%; }
@@ -65,11 +65,58 @@
                 font-size: 14px;
             }
             .card .actions .btn { margin-right: 8px; }
+
+            /* --- logo --- */
+            .logo { margin: 0; font-size: 75px; line-height: 1.1; font-weight: 800; letter-spacing: .2px; }
+            .logo a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 0; }
+            .logo .accent {
+                background: linear-gradient(90deg, #2563eb, #7c3aed);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                -webkit-text-fill-color: transparent;
+            }
+            .logo .badge {
+                font-size: .25em;
+                font-weight: 700;
+                padding: 4px 8px;
+                border-radius: 999px;
+                background: #054eec;
+                color: #fff;
+                border:  1px solid rgba(249,6,6,0.06);
+                line-height: 1;
+                position: relative;
+                top: -1.40em;
+            }
+            .logo a:hover .badge { background: #0f172a; }
+            .logo a:hover { filter: brightness(1.02);}
+
+            /* “-” の見た目と詰め具合 */
+            .logo .hyphen { margin: 0 6px 0 4px; color: #9ca3af; }
+
+            /* “tracker” もグラデで強調（色はお好みで） */
+            .logo .tail {
+            background: linear-gradient(90deg, #10b981, #06b6d4); /* green → cyan */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            }
+
+            /* スマホで大きすぎるのを防ぐ（任意） */
+            @media (max-width: 480px) {
+            .logo { font-size: 44px; }  /* モバイル時は約1.5倍相当に抑える */
+            }
         </style>
     </head>
     <body>
         <header>
-            <h1>date-tracker</h1>
+            <h1 class="logo">
+                <a href="{{ url_for('index') }}" aria-label="Date-Tracker トップへ">
+                    <span class="accent">Date</span><span class="hyphen">-</span><span class="tail">Tracker</span>
+                    <span class="badge">DT</span>
+                </a>
+            </h1>
             <nav>
                 <a class="btn" href="{{ url_for('index') }}">トップ</a>
                 <a class="btn success" href="{{ url_for('add') }}">登録</a>
