@@ -8,19 +8,21 @@
         <p>表示できるデータがありません。</p>
         <p><a class="btn primary" href="{{ url_for('add') }}">登録へ</a></p>
     {% else %}
-        <table>
+        <div class="table-wrap">
+        <table class="table striped hover compact">
             <thead>
-                <tr><th>名前</th><th>日付（YYYY-MM-DD）</th></tr>
+            <tr><th>名前</th><th>日付（YYYY-MM-DD）</th></tr>
             </thead>
             <tbody>
-                {% for name, date_iso in records %}
-                    <tr>
-                        <td>{{ name }}</td>
-                        <td>{{ date_iso }}</td>
-                    </tr>
-                {% endfor %}
+            {% for name, date_iso in records %}
+                <tr>
+                <td>{{ name }}</td>
+                <td>{{ date_iso }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
+        </div>
         <p>合計 {{ count }} 件</p>
     {% endif %}
 
