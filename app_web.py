@@ -96,7 +96,7 @@
 
 from __future__ import annotations
 from flask import Flask, render_template, request, redirect, url_for, flash
-from tracker_core import load_json, save_json, save_csv
+from tracker_core import load_json, save_json, save_csv, is_iso_date
 import os
 import tracker_core as core
 
@@ -216,6 +216,34 @@ def elapsed():
         result = f"{name} まで、あと{abs(d)}日です。"
 
     return render_template("elapsed.html", result=result)
+
+@app.get("/edit/<name>")
+def edit_form(name: str):
+    name = name.strip()
+    records = load_json(JSON_PATH)
+    if name not in records:
+        flash(f"「{name}」は見つかりません。", "error")
+        return redirect(url_for("list_view"))
+    return render_template("edit.html", name=name, date_iso=records[name])
+
+@app.post("/edit/<name>")
+def edit_submit(name: str):
+    name = name.strip()
+    records = load_json(JSON_PATH)
+    if name not in records:
+        flash(F"「{name}」は見つかりません。", "error")
+        return redirect(url_for("list_view"))
+    
+    new_date = (request.form.get("date_iso") or "").strip()
+    if not is_iso_date(new_date):
+        flash('"YYYY-MM-DD" の形式で入力してください。', "error")
+        return redirect(url_for("edit_form", name=name))
+    
+    records[name] = new_date
+    save_json(records, JSON_PATH)
+    save_csv(records, CSV_PATH)
+    flash(f"「{name}」の日付を {new_date} に更新しました。", "success")
+    return redirect(url_for("list_view"))
 
 if __name__ == "__main__":
     app.run(debug=True)

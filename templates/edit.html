@@ -1,0 +1,19 @@
+<!-- AIが出力 → 書き写し -->
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>編集</h2>
+  <form method="post" action="{{ url_for('edit_submit', name=name) }}">
+    <label>名前</label>
+    <input type="text" value="{{ name }}" disabled>
+
+    <label for="date_iso">日付（YYYY-MM-DD）</label>
+    <input type="date" id="date_iso" name="date_iso" class="input-date"
+           value="{{ date_iso }}" required>
+
+    <div>
+        <button class="btn success"  type="submit">更新</button>
+        <a class="btn secondary" href="{{ url_for('list_view') }}">一覧へ</a>
+    </div>
+  </form>
+{% endblock %}
