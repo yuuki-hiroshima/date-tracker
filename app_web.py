@@ -96,7 +96,8 @@
 
 from __future__ import annotations
 from flask import Flask, render_template, request, redirect, url_for, flash
-from tracker_core import load_json, save_json, save_csv, is_iso_date
+from tracker_core import load_json, save_json, save_csv, is_iso_date, days_between, DATE_FMT
+from datetime import date, datetime
 import os
 import tracker_core as core
 
@@ -119,9 +120,45 @@ def sanitize_name(text: str) -> str:
 def validate_iso(date_text: str) -> bool:
     return core.is_iso_date(date_text)
 
+def _build_nextdays_widget(records: dict[str, str]):
+    """
+    records: {name: 'YYYY-MM-DD'}
+    return:
+      None  … データなし
+      dict … {'kind': 'upcoming'|'past', 'name': str, 'target_date': 'YYYY-MM-DD', 'days': int}
+    """
+    if not records:
+        return None
+    
+    today = date.today()
+    futures = []
+    pasts = []
+
+    for name, iso in records.items():
+        try:
+            d = datetime.strptime(iso, DATE_FMT).date()
+        except Exception:
+            continue
+
+        delta = (d - today).days
+        if delta >= 0:
+            futures.append((delta, name, iso))
+        else:
+            pasts.append((-delta, name, iso))
+
+    if futures:
+        delta, name, iso = min(futures, key=lambda x: x[0])
+        return {'kind': 'upcoming', 'name': name, 'target_date': iso, 'days': int(delta)}
+    if pasts:
+        delta, name, iso = min(pasts, key=lambda x: x[0])
+        return {'kind': 'past', 'name': name, 'target_date': iso, 'days': int(delta)}
+    return None
+
 @app.route("/")
 def index():
-    return render_template("index.html")
+    records = load_json(JSON_PATH)
+    widget = _build_nextdays_widget(records)
+    return render_template("index.html", widget=widget)
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
