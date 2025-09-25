@@ -4,6 +4,26 @@
 {% block content %}
     <h2>メニュー</h2>
     <div class="cards">
+        {% if widget %}
+          <div class="card">
+            {% if widget.kind == 'upcoming' %}
+              <h3>次の予定</h3>
+              <p>「{{ widget.name }}」まであと</p>
+              <p style="font-size: 28px; font-weight: 800; margin: 6px 0;">
+                {{ widget.name }} 日
+              </p>
+              <p style="color: #555;">予定日：{{ widget.target_date }}</p>
+            {% elif widget.kind == 'past' %}
+              <h3>直近のイベント</h3>
+              <p>「{{ widget.name }}」から</p>
+              <p style="font-size: 28px; font-weight: 800; margin: 6px 0;">
+                {{ widget.days }} 日が経過
+              </p>
+              <p style="color: #555;">実施日：{{ widget.target_date }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+        
         <div class="card">
             <h3>登録</h3>
             <p>タイトルと日付を追加します。</p>
