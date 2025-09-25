@@ -123,6 +123,54 @@
             .input-date::after::after-webkit-calendar-picker-indicator {
                 opacity: 0;
             }
+
+            /* === global scale up (home-first) === */
+            :root{
+                --base-font: 30px;
+                --scale-h1:   1.10;
+                --space:      28px;
+                --card-pad:   20px;
+                --btn-pad-y:  10px;
+                --btn-pad-x:  14px;
+            }
+
+            /* 全体の文字サイズと行間 */
+            body {
+                font-size: var(--base-font);
+                line-height: 1.7;
+                margin: 28px;
+            }
+
+            /* 見出しとセクション余白 */
+            header { margin-bottom: var(--space); }
+            h2 { font-size: calc(1.1rem + 0.4vw); margin: 0 0 12px; }
+
+            /* カードを少し大きく */
+            .cards { gap: 20px; }
+            .card { padding: var(--card-pad); border-radius: 14px; }
+            .card h3 { font-size: 20px; }
+            .card p { font-size: 15px; }
+
+            /* ボタンを少し大きく */
+            .btn {
+                padding: var(--btn-pad-y) var(--btn-pad-x);
+                border-radius: 8px;
+            }
+
+            /* テーブル行を気持ち大きめに */
+            .table th, .table td { padding: 10px; }
+
+            /* モバイル時は過度に大きくならないよう微調整 */
+            @media (max-width: 480px){
+                :root{
+                    --base-font: 17px;
+                    --space: 24px;
+                    --card-pad: 16px;
+                    --btn-pad-y: 9px;
+                    --btn-pad-x: 12px;
+                }
+                body { margin: 20px; }
+            }
         </style>
     </head>
     <body>
