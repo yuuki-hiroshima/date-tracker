@@ -21,6 +21,10 @@
             input[type="text"] { width: 260px; padding: 6px; }
             .btn { display: inline-block; padding: 8px 12px; margin: 6px 8px 0 0; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; color: #333; }
             .btn.primary { background: #f0f7ff; border-color: #a3c8ff; }
+            .btn.success { background: #e6f6e6; border-color: #9f8fd2; color: #d7119b; }
+            .btn.secondary { background: #f4f4f4; border-color: #cccccc; color: #333333; }
+            .btn.denger { background: #ffecec; border-color: #ffb3b3; color: #a30000; }
+
         </style>
     </head>
     <body>
@@ -28,7 +32,7 @@
             <h1>date-tracker</h1>
             <nav>
                 <a class="btn" href="{{ url_for('index') }}">トップ</a>
-                <a class="btn" href="{{ url_for('add') }}">登録</a>
+                <a class="btn success" href="{{ url_for('add') }}">登録</a>
                 <a class="btn" href="{{ url_for('list_view') }}">一覧</a>
                 <a class="btn" href="{{ url_for('elapsed') }}">経過日</a>
             </nav>
