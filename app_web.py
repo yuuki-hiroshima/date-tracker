@@ -96,6 +96,7 @@
 
 from __future__ import annotations
 from flask import Flask, render_template, request, redirect, url_for, flash
+from tracker_core import load_json, save_json, save_csv
 import os
 import tracker_core as core
 
@@ -162,6 +163,26 @@ def list_view():
     sorted_names = sorted(records.keys())
     rows = [(n, records[n]) for n in sorted_names]
     return render_template("list.html", records=rows, count=count)
+
+@app.post("/delete/<name>")
+def delete_entry(name: str):
+    name = name.strip()
+    if not name:
+        flash("削除対象の名前がからです。", "error")
+        return redirect(url_for("list_view"))
+    
+    records = load_json(JSON_PATH)
+    if name not in records:
+        flash(f"「{name}」は見つかりません。", "error")
+        return redirect(url_for("list_view"))
+    
+    del records[name]
+    save_json(records, JSON_PATH)
+    save_csv(records, CSV_PATH)
+
+    flash(f"「{name}」を削除しました。", "success")
+    return redirect(url_for("list_view"))
+
 
 @app.route("/elapsed", methods=["GET", "POST"])
 def elapsed():
