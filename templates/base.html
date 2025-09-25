@@ -35,6 +35,36 @@
 
             /* --- スマホで横スクロールできるように --- */
             .table-wrap { overflow-x: auto; }
+
+            /* --- cards on home --- */
+            .cards {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 16px;
+                margin-top: 12px;
+            }
+            .card {
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                padding: 16px;
+                background: #fff;
+                box-shadow: 0 2px 8px rgba(0,0,0,.04);
+                transition: transform .12s ease, box-shadow .12s ease;
+            }
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 18px rgba(0,0,0,.08);
+            }
+            .card h3 {
+                margin: 0 0 8px;
+                font-size: 18px;
+            }
+            .card p {
+                margin: 0 0 12px;
+                color: #555;
+                font-size: 14px;
+            }
+            .card .actions .btn { margin-right: 8px; }
         </style>
     </head>
     <body>

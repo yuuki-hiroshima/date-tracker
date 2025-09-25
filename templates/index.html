@@ -3,10 +3,27 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>メニュー</h2>
-    <p>「登録」「一覧」「経過日」をブラウザで操作できます。</p>
-    <p>
-        <a class="btn primary" href="{{ url_for('add') }}">登録</a>
-        <a class="btn primary" href="{{ url_for('list_view') }}">一覧</a>
-        <a class="btn primary" href="{{ url_for('elapsed') }}">経過日</a>
-    </p>
+    <div class="cards">
+        <div class="card">
+            <h3>登録</h3>
+            <p>タイトルと日付を追加します。</p>
+            <div class="actions">
+                <a class="btn success" href="{{ url_for('add') }}">登録へ</a>
+            </div>
+        </div>
+        <div class="card">
+            <h3>一覧</h3>
+            <p>登録済みのデータを一覧表示します。</p>
+            <div class="actions">
+                <a class="btn" href="{{ url_for('list_view') }}">一覧を見る</a>
+            </div>
+        </div>
+        <div class="card">
+            <h3>経過日</h3>
+            <p>指定日までの残り/経過日数を計算します。</p>
+            <div class="actions">
+                <a class="btn" href="{{ url_for('elapsed') }}">計算へ</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
