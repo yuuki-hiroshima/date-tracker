@@ -1,0 +1,193 @@
+
+
+body { font-family: system-ui, sans-serif; margin: 24px; }
+header, footer { margin-bottom: 30px; color: #555; }
+nav a { margin-right: 12px; }
+.flash { padding: 10px; border-radius: 6px; margin: 8px 0; }
+.flash.error { background: #ffe5e5; color: #9a0000; border: 1px solid #ffb3b3; }
+.flash.success { background: #e9ffe9; color: #0a7a0a; border: 1px solid #a6e3a6; }
+.flash.info { background: #eaf3ff; color: #0a549a; border: 1px solid #b9d7ff; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ddd; padding: 8px; }
+th { background: #f5f5f5; text-align: left; }
+form label { display: block; margin: 12px 0 4px; }
+input[type="text"] { width: 260px; padding: 6px; }
+
+a.btn,
+button.btn,
+input[type="submit"].btn {
+    font: inherit;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* ネイティブボタンのデフォルト外観を無効化（Safari/Chrome対策） */
+button.btn,
+input[type="submit"].btn {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* 共通の見た目（既存 .btn を上書き/整形） */
+.btn {
+    padding: var(--btn-pad-y) var(--btn-pad-x);
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f9fafb;
+    color: #333;
+    margin: 6px 8px 0 0;
+}
+
+.btn { display: inline-block; padding: 8px 12px; margin: 6px 8px 0 0; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; color: #333; }
+.btn.primary { background: #f0f7ff; border-color: #a3c8ff; }
+.btn.success { background: #cdf6cd; border-color: #acf0ac; color: #0e0e0e; }
+.btn.secondary { background: #f4f4f4; border-color: #cccccc; color: #333333; }
+.btn.danger { background: #ffecec; border-color: #ffb3b3; color: #a30000; }
+
+
+/* --- table variants --- */
+.table { border-collapse: collapse; width: 100%; }
+.table th, .table td { border: 1px solid #ddd; padding: 8px; }
+.table th { background: #f7f7f7; text-align: left; }
+.table.striped tbody tr:nth-child(even) { background: #fafafa; }
+.table.hover tbody tr:hover { background: #eef6ff; }
+.table.compact th, .table.compact td { padding: 6px 8px; }
+
+/* --- スマホで横スクロールできるように --- */
+.table-wrap { overflow-x: auto; }
+
+/* --- cards on home --- */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+.card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+}
+.card h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+.card p {
+    margin: 0 0 12px;
+    color: #555;
+    font-size: 14px;
+}
+.card .actions .btn { margin-right: 8px; }
+
+/* --- logo --- */
+.logo { margin: 0; font-size: 75px; line-height: 1.1; font-weight: 800; letter-spacing: .2px; }
+.logo a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 0; }
+.logo .accent {
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.logo .badge {
+    font-size: .25em;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #054eec;
+    color: #fff;
+    border:  1px solid rgba(249,6,6,0.06);
+    line-height: 1;
+    position: relative;
+    top: -1.40em;
+}
+.logo a:hover .badge { background: #0f172a; }
+.logo a:hover { filter: brightness(1.02);}
+
+/* “-” の見た目と詰め具合 */
+.logo .hyphen { margin: 0 6px 0 4px; color: #9ca3af; }
+
+/* “tracker” もグラデで強調（色はお好みで） */
+.logo .tail {
+background: linear-gradient(90deg, #10b981, #06b6d4); /* green → cyan */
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+-webkit-text-fill-color: transparent;
+}
+
+/* スマホで大きすぎるのを防ぐ（任意） */
+@media (max-width: 480px) {
+.logo { font-size: 44px; }  /* モバイル時は約1.5倍相当に抑える */
+}
+
+/* --- date input with calendar icon --- */
+.input-date {
+    appearance: none;
+    -webkit-appearance: none;
+    background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="%23666"><path d="M5 2a1 1 0 1 1 2 0v1h4V2a1 1 0 1 1 2 0v1h1.5A1.5 1.5 0 0 1 16 4.5v10A1.5 1.5 0 0 1 14.5 16h-11A1.5 1.5 0 0 1 2 14.5v-10A1.5 1.5 0 0 1 3.5 3H5V2ZM3.5 6v8h11V6h-11Z"/></svg>') no-repeat right 10px center;
+    background-size: 18px 18px;
+    padding-right: 40px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 10px;
+    width: 260px;
+}
+/* hide native picker icon on Webkit (Chrome/Safari) */
+.input-date::-webkit-calendar-picker-indicator {
+    opacity: 0;
+}
+
+/* === global scale up (home-first) === */
+:root{
+    --base-font: 30px;
+    --scale-h1:   1.10;
+    --space:      28px;
+    --card-pad:   20px;
+    --btn-pad-y:  10px;
+    --btn-pad-x:  14px;
+}
+
+/* 全体の文字サイズと行間 */
+body {
+    font-size: var(--base-font);
+    line-height: 1.7;
+    margin: 28px;
+}
+
+/* 見出しとセクション余白 */
+header { margin-bottom: var(--space); }
+h2 { font-size: calc(1.1rem + 0.4vw); margin: 0 0 12px; }
+
+/* カードを少し大きく */
+.cards { gap: 20px; }
+.card { padding: var(--card-pad); border-radius: 14px; }
+.card h3 { font-size: 20px; }
+.card p { font-size: 15px; }
+
+/* テーブル行を気持ち大きめに */
+.table th, .table td { padding: 10px; }
+
+/* モバイル時は過度に大きくならないよう微調整 */
+@media (max-width: 480px){
+    :root{
+        --base-font: 17px;
+        --space: 24px;
+        --card-pad: 16px;
+        --btn-pad-y: 9px;
+        --btn-pad-x: 12px;
+    }
+    body { margin: 20px; }
+}
