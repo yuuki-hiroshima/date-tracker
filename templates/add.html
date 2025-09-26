@@ -1,18 +1,19 @@
-<!-- AIが出力 → 書き写し -->
-
 {% extends "base.html" %}
 {% block content %}
-    <h2>登録</h2>
-    <form method="post" action="{{ url_for('add') }}">
-        <label for="name">名前</label>
-        <input type="text" id ="name" name="name" placeholder="例：電池交換">
+  <h2>登録</h2>
+  <form method="post" action="{{ url_for('add') }}">
+    <label for="name">名前</label>
+    <input type="text" id="name" name="name" placeholder="例：電池交換">
 
-        <label for="date_iso">日付（YYYY-MM-DD）</label>
-        <input type="date" id="date_iso" name="date_iso" class="input-date" placeholder="=例：202-01-23" required>
+    <label for="date_iso">日付（YYYY-MM-DD）</label>
+    <div class="date-field">
+      <input type="date" id="on_date" name="on_date" class="input-date" required>
+      <button type="button" class="date-btn" aria-label="日付を選択"></button>
+    </div>
 
-        <div>
-            <button class="btn success" type="submit">登録</button>
-            <a class="btn secondary" href="{{ url_for('index') }}">トップへ</a>
-        </div>
-    </form>
+    <div>
+      <button class="btn success" type="submit">登録</button>
+      <a class="btn secondary" href="{{ url_for('index') }}">トップへ</a>
+    </div>
+  </form>
 {% endblock %}

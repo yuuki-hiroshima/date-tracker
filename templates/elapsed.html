@@ -1,23 +1,24 @@
-<!-- AIが出力 → 書き写し -->
-
 {% extends "base.html" %}
 {% block content %}
-    <h2>経過日</h2>
-    <form method="post" action="{{ url_for('elapsed') }}">
-        <label for="name">名前</label>
-        <input type="text" id="name" name="name" placeholder="例：電池交換">
+  <h2>経過日</h2>
+  <form method="post" action="{{ url_for('elapsed') }}">
+    <label for="name">名前</label>
+    <input type="text" id="name" name="name" placeholder="例：電池交換">
 
-        <label for="on_date">比較日（YYYY-MM-DD）</label>
-        <input type="date" id="on_date" name="on_date" class="input-date" placeholder="例：202-01-23" required>
+    <label for="on_date">比較日（YYYY-MM-DD）</label>
+    <div class="date-field">
+      <input type="date" id="on_date" name="on_date" class="input-date" required>
+      <button type="button" class="date-btn" aria-label="日付を選択"></button>
+    </div>
 
-        <div>
-            <button class="btn primary" type="submit">計算</button>
-            <a class="btn" href="{{ url_for('index') }}">トップへ</a>
-        </div>
-    </form>
+    <div>
+      <button class="btn primary" type="submit">計算</button>
+      <a class="btn" href="{{ url_for('index') }}">トップへ</a>
+    </div>
+  </form>
 
-    {% if result %}
-        <hr>
-        <p><strong>結果：</strong>{{ result }}</p>
-    {% endif %}
+  {% if result %}
+    <hr>
+    <p><strong>結果：</strong>{{ result }}</p>
+  {% endif %}
 {% endblock %}
