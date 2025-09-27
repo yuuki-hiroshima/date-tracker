@@ -1,78 +1,89 @@
-<!-- AIが出力 → 書き写し -->
-
 <!doctype html>
 <html lang="ja">
-    <head>
-        <script>
-          (function () {
-            try {
-              var t = localStorage.getItem('theme'); // 'dark' or 'light' or null
-              var root = document.documentElement;
-              if (t === 'dark') {
-                root.setAttribute('data-theme','dark');
-              } else if (t === 'light') {
-                root.removeAttribute('data-theme');
-              } else {
-                // 未保存時は OS 設定に追従
-                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (prefersDark) root.setAttribute('data-theme','dark');
-              }
-            } catch(e) {}
-          })();
-        </script>
-        <meta charset="utf-8">
-        <title>Date-Tracker</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
-    <body>
-        <header>
-            <h1 class="logo">
-                <a href="{{ url_for('index') }}" aria-label="Date-Tracker トップへ">
-                    <span class="accent">Date</span><span class="hyphen">-</span><span class="tail">Tracker</span>
-                    <span class="badge">DT</span>
-                </a>
-            </h1>
-            <nav>
-                <a class="btn" href="{{ url_for('index') }}">トップ</a>
-                <a class="btn" href="{{ url_for('add') }}">登録</a>
-                <a class="btn" href="{{ url_for('list_view') }}">一覧</a>
-                <a class="btn" href="{{ url_for('elapsed') }}">経過日</a>
-            </nav>
-        </header>
+  <head>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme'); // 'dark' or 'light' or null
+          var root = document.documentElement;
+          if (t === 'dark') {
+            root.setAttribute('data-theme','dark');
+          } else if (t === 'light') {
+            root.removeAttribute('data-theme');
+          } else {
+            // 未保存時は OS 設定に追従
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDark) root.setAttribute('data-theme','dark');
+          }
+        } catch(e) {}
+      })();
+    </script>
+    <meta charset="utf-8">
+    <title>Date-Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 中央寄せやフォーム幅などは style.css に追加済みの .shell / .content / form を使います -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <!-- ▼ ページ全体の中央カラム（左右中央寄せ＆最大幅制御） -->
+    <div class="shell">
+      <header>
+        <h1 class="logo">
+          <a href="{{ url_for('index') }}" aria-label="Date-Tracker トップへ">
+            <span class="accent">Date</span><span class="hyphen">-</span><span class="tail">Tracker</span>
+            <span class="badge">DT</span>
+          </a>
+        </h1>
+        <nav>
+          <a class="btn" href="{{ url_for('index') }}">トップ</a>
+          <a class="btn" href="{{ url_for('add') }}">登録</a>
+          <a class="btn" href="{{ url_for('list_view') }}">一覧</a>
+          <a class="btn" href="{{ url_for('elapsed') }}">経過日</a>
+        </nav>
+      </header>
 
-        <!-- フラッシュメッセージ -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+      <!-- フラッシュメッセージ -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
 
-        <!-- 子テンプレートをここに差し込む -->
+      <!-- ▼ コンテンツ用の中央カラム領域 -->
+      <main class="content">
         {% block content %}{% endblock %}
+      </main>
 
-        <footer>
-            <button id="theme-toggle" class="btn secondary" aria-label="テーマ切替">🌓テーマ</button>
-            <small>&copy; 2025 date-tracker</small>
-        </footer>
-        <script src="{{ url_for('static', filename='theme.js') }}"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.date-field').forEach(field => {
-                    const input = field.querySelector('input[type="date"]');
-                    const btn   = field.querySelector('.date-btn');
-                    if (!input || !btn) return;
-                    btn.addEventListener('click', () => {
-                        if (input.showPicker) {
-                            input.showPicker();        // Chrome / 新しめのSafari/Edge
-                        } else {
-                        input.focus();             // フォールバック
-                    }
-                });
-            });
+      <footer>
+        <button id="theme-toggle" class="btn secondary" aria-label="テーマ切替">🌓テーマ</button>
+        <small>&copy; 2025 date-tracker</small>
+      </footer>
+    </div>
+    <!-- ▲ .shell おわり -->
+
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+
+    <!-- 日付ピッカーのボタン（.date-btn）をクリックで開く用。括弧のズレを修正済み -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.date-field').forEach(field => {
+          const input = field.querySelector('input[type="date"]');
+          const btn   = field.querySelector('.date-btn');
+          if (!input || !btn) return;
+
+          btn.addEventListener('click', () => {
+            if (input.showPicker) {
+              // Chrome / 新しめの Safari / Edge
+              input.showPicker();
+            } else {
+              // フォールバック
+              input.focus();
+            }
+          });
         });
-        </script>
-    </body>
+      });
+    </script>
+  </body>
 </html>

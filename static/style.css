@@ -312,3 +312,87 @@ input[type="text"]:focus { outline: 2px solid #60a5fa; outline-offset: 2px; }
 .card, .btn, table, th, td {
   transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
+
+/* ---------------------------------
+ * 12)  レイアウト（中央寄せ）
+ * --------------------------------- */
+
+/* ページの外枠。幅を制限して左右中央に配置 */
+.shell {
+  max-width: 960px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+/* 本文ブロックの上下余白 */
+.content {
+  margin-block: 16px 32px;
+}
+
+/* 全フォームを「少し細め＋中央」に。ページに1つ想定ならこれでOK */
+form {
+  max-width: 520px;
+  margin-inline: auto;
+}
+
+/* 入力欄は幅を親フォームに合わせて伸ばす（既存input幅指定があれば上書き） */
+input[type="text"],
+input[type="date"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ボタン行を中央に寄せたい場合 */
+form .actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+/* ===== レイアウト中央寄せ（タイトル・ナビ・フッター） ===== */
+
+/* ページの最大幅＆左右中央寄せ（既に指定済みならそのままでOK） */
+.shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* 見出しロゴとメニューを縦に並べて中央に */
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+/* ロゴの箱自体も中央に置きたい時の保険 */
+.logo {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ナビのボタン群を横並びで中央に */
+header nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* フッターも中央寄せ（テーマ切替ボタン＋コピーライト） */
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* 画面幅が広いとき少しゆったりさせたい場合 */
+@media (min-width: 1024px) {
+  .shell { max-width: 1040px; }
+}
