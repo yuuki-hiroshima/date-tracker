@@ -7,11 +7,10 @@
 
     <label for="date_iso">日付（YYYY-MM-DD）</label>
     <div class="date-field">
-      <!-- ※ name は必ず date_iso にする -->
-      <input type="date" id="date_iso" name="date_iso" class="input-date" required>
+      <input type="date" class="input-date" id="date_iso" name="date_iso" required>
       <button type="button" class="date-btn"
-              onclick="this.previousElementSibling.showPicker && this.previousElementSibling.showPicker()"
-              aria-label="カレンダーを開く"></button>
+          onclick="this.previousElementSibling.showPicker?.()"
+          aria-label="カレンダーを開く"></button>
     </div>
 
     <div>

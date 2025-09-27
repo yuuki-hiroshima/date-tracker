@@ -1,18 +1,25 @@
-/* ===================================================================
-   テーマ用の色変数（ライト基準）
-   - アプリ全体の色やコンポーネントの色を CSS 変数で一元管理
-   =================================================================== */
+/* =========================================================
+   Date-Tracker / style.css（整理版）
+   目的：
+   - 変数（CSSカスタムプロパティ）でテーマ切替と一元管理
+   - コンポーネントごとにセクション化して可読性アップ
+   - 日付アイコンのズレ修正（.date-field＋ボタン方式）
+   ========================================================= */
+
+/* ---------------------------------
+ * 1) テーマ変数（ライト）
+ * --------------------------------- */
 :root {
   /* ベース色 */
   --bg: #ffffff;
   --text: #111827;
   --muted: #555555;
 
-  /* サーフェス（カードなど） */
+  /* サーフェス（カード等） */
   --card-bg: #ffffff;
   --card-border: #e5e7eb;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --shadow: 0 2px 8px rgba(0,0,0,.04);
+  --shadow-hover: 0 6px 18px rgba(0,0,0,.08);
 
   /* テーブル */
   --table-border: #dddddd;
@@ -21,57 +28,57 @@
   --table-even-bg: #fafafa;
   --table-hover-bg: #eef6ff;
 
-  /* ボタン */
+  /* ボタン共通 */
   --btn-text: #333333;
   --btn-border: #cccccc;
   --btn-bg: #f9fafb;
-
+  /* ボタン各種 */
   --btn-primary-bg: #f0f7ff;  --btn-primary-border: #a3c8ff;
-  --btn-success-bg: #e6f6e6;  --btn-success-border: #8fd28f;  --btn-success-text: #0a7a0a;
-  --btn-secondary-bg: #f4f4f4;--btn-secondary-border: #cccccc;
-  --btn-danger-bg: #ffecec;   --btn-danger-border: #ffb3b3;   --btn-danger-text: #a30000;
+  --btn-success-bg: #e6f6e6;  --btn-success-border: #8fd28f; --btn-success-text: #0a7a0a;
+  --btn-secondary-bg:#f4f4f4; --btn-secondary-border:#cccccc;
+  --btn-danger-bg:  #ffecec;  --btn-danger-border:  #ffb3b3; --btn-danger-text:#a30000;
 
-  /* 日付入力（見た目＆アイコン位置の調整変数） */
+  /* 入力（date）見た目 */
   --input-bg: #ffffff;
   --input-border: #cccccc;
-  --calendar-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="%23666"><path d="M5 2a1 1 0 1 1 2 0v1h4V2a1 1 0 1 1 2 0v1h1.5A1.5 1.5 0 0 1 16 4.5v10A1.5 1.5 0 0 1 14.5 16h-11A1.5 1.5 0 0 1 2 14.5v-10A1.5 1.5 0 0 1 3.5 3H5V2ZM3.5 6v8h11V6h-11Z"/></svg>');
-  --date-icon-right: 12px;  /* 右端からの距離（横のズレ調整） */
-  --date-icon-shift:  -1px;  /* 縦位置の微調整（+にすると下がる） */
 
-  /* UIスケール（トップの拡大に合わせた調整） */
+  /* カレンダーアイコン（ライト） */
+  --calendar-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23666'%3E%3Cpath d='M5 2a1 1 0 1 1 2 0v1h4V2a1 1 0 1 1 2 0v1h1.5A1.5 1.5 0 0 1 16 4.5v10A1.5 1.5 0 0 1 14.5 16h-11A1.5 1.5 0 0 1 2 14.5v-10A1.5 1.5 0 0 1 3.5 3H5V2ZM3.5 6v8h11V6h-11Z'/%3E%3C/svg%3E");
+
+
+  /* スケール・余白（UI全体の拡大率） */
   --base-font: 30px;
-  --scale-h1: 1.10;
   --space: 28px;
   --card-pad: 20px;
   --btn-pad-y: 10px;
   --btn-pad-x: 14px;
+
+  /* 日付アイコンの垂直位置補正（px）。値を増やすと下がる */
+  --date-icon-shift: 8px;
 }
 
-/* ===================================================================
-   ダークテーマ用の色変数（JS の data-theme="dark" で適用）
-   =================================================================== */
+/* ---------------------------------
+ * 2) テーマ変数（ダーク）
+ *    data-theme="dark" を付与したとき
+ * --------------------------------- */
 :root[data-theme="dark"] {
-  /* ベース色 */
   --bg: #0c1220;
   --text: #e8ecf2;
   --muted: #a2aabc;
 
-  /* サーフェス */
   --card-bg: #0f1a2e;
   --card-border: #25324a;
-  --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow: 0 2px 10px rgba(0,0,0,.35);
+  --shadow-hover: 0 8px 24px rgba(0,0,0,.45);
 
-  /* テーブル */
   --table-border: #2a3b58;
   --table-head-bg: #12213a;
-  --table-odd-bg: #0f1a2e;
+  --table-odd-bg:  #0f1a2e;
   --table-even-bg: #111f36;
-  --table-hover-bg: #193154;
+  --table-hover-bg:#193154;
 
-  /* ボタン（コントラスト微増） */
   --btn-text: #e8ecf2;
-  --btn-border: #384e7d;
+  --btn-border: #3a4d79; /* 少しコントラストUP */
   --btn-bg: #1b2948;
 
   --btn-primary-bg:  #1b2f55;  --btn-primary-border:#3c5e9e;
@@ -79,50 +86,60 @@
   --btn-secondary-bg:#1a233a;  --btn-secondary-border:#2e4166;
   --btn-danger-bg:   #402024;  --btn-danger-border: #7f3a44; --btn-danger-text:#ffc3c6;
 
-  /* 日付入力（暗背景用アイコンと色） */
   --input-bg: #0e1a30;
   --input-border: #2c3e61;
-  --calendar-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="%23cfd8e3"><path d="M5 2a1 1 0 1 1 2 0v1h4V2a1 1 0 1 1 2 0v1h1.5A1.5 1.5 0 0 1 16 4.5v10A1.5 1.5 0 0 1 14.5 16h-11A1.5 1.5 0 0 1 2 14.5v-10A1.5 1.5 0 0 1 3.5 3H5V2ZM3.5 6v8h11V6h-11Z"/></svg>');
+
+  /* カレンダーアイコン（ダーク） */
+  --calendar-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23cfd8e3'%3E%3Cpath d='M5 2a1 1 0 1 1 2 0v1h4V2a1 1 0 1 1 2 0v1h1.5A1.5 1.5 0 0 1 16 4.5v10A1.5 1.5 0 0 1 14.5 16h-11A1.5 1.5 0 0 1 2 14.5v-10A1.5 1.5 0 0 1 3.5 3H5V2ZM3.5 6v8h11V6h-11Z'/%3E%3C/svg%3E");
 }
 
-/* ===================================================================
-   ベースのレイアウトとタイポグラフィ
-   =================================================================== */
-html, body, .card, .btn, table, th, td {
-  /* テーマ切替時のなめらかな遷移 */
-  transition: background-color .18s ease, color .18s ease,
-              border-color .18s ease, box-shadow .18s ease;
+/* ---------------------------------
+ * 3) ベース（レイアウト・タイポ）
+ * --------------------------------- */
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background-color .18s ease, color .18s ease;
 }
 
 body {
   font-family: system-ui, sans-serif;
+  margin: 28px;
   font-size: var(--base-font);
   line-height: 1.7;
-  margin: 28px;
-  background: var(--bg);
-  color: var(--text);
 }
 
-header { margin-bottom: var(--space); }
-footer { margin-top: var(--space); color: var(--muted); }
+header, footer { margin-bottom: var(--space); color: var(--muted); }
 h2 { font-size: calc(1.1rem + 0.4vw); margin: 0 0 12px; }
+nav a { margin-right: 12px; }
 
-/* ===================================================================
-   フラッシュメッセージ
-   =================================================================== */
+/* スマホでの縮尺（過度な拡大抑制） */
+@media (max-width: 480px) {
+  :root {
+    --base-font: 17px;
+    --space: 24px;
+    --card-pad: 16px;
+    --btn-pad-y: 9px;
+    --btn-pad-x: 12px;
+  }
+  body { margin: 20px; }
+}
+
+/* ---------------------------------
+ * 4) フラッシュメッセージ
+ * --------------------------------- */
 .flash { padding: 10px; border-radius: 6px; margin: 8px 0; }
-.flash.error   { background: #ffe5e5; color: #9a0000; border: 1px solid #ffb3b3; }
-.flash.success { background: #e9ffe9; color: #0a7a0a; border: 1px solid #a6e3a6; }
-.flash.info    { background: #eaf3ff; color: #0a549a; border: 1px solid #b9d7ff; }
+.flash.error   { background:#ffe5e5; color:#9a0000; border:1px solid #ffb3b3; }
+.flash.success { background:#e9ffe9; color:#0a7a0a; border:1px solid #a6e3a6; }
+.flash.info    { background:#eaf3ff; color:#0a549a; border:1px solid #b9d7ff; }
 
-/* ダーク時のフラッシュ（視認性を上げる） */
 :root[data-theme="dark"] .flash.success { background:#10251a; color:#b7f8cc; border:1px solid #2b6e50; }
 :root[data-theme="dark"] .flash.error   { background:#2a1215; color:#ffc3c6; border:1px solid #7f3a44; }
 :root[data-theme="dark"] .flash.info    { background:#0f2338; color:#c8dcff; border:1px solid #3a5f9f; }
 
-/* ===================================================================
-   ボタン（a / button / input[type=submit] を統一）
-   =================================================================== */
+/* ---------------------------------
+ * 5) ボタン（a / button / input共通）
+ * --------------------------------- */
 a.btn, button.btn, input[type="submit"].btn {
   font: inherit;
   line-height: 1.2;
@@ -134,45 +151,43 @@ a.btn, button.btn, input[type="submit"].btn {
   box-sizing: border-box;
   -webkit-appearance: none;
   appearance: none;
-}
-
-.btn {
   padding: var(--btn-pad-y) var(--btn-pad-x);
   margin: 6px 8px 0 0;
-  border: 1px solid var(--btn-border);
   border-radius: 8px;
+  border: 1px solid var(--btn-border);
   background: var(--btn-bg);
   color: var(--btn-text);
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease, transform .06s ease;
 }
 
-/* バリエーション */
-.btn.primary   { background: var(--btn-primary-bg);   border-color: var(--btn-primary-border); }
-.btn.success   { background: var(--btn-success-bg);   border-color: var(--btn-success-border); color: var(--btn-success-text); }
-.btn.secondary { background: var(--btn-secondary-bg); border-color: var(--btn-secondary-border); }
-.btn.danger    { background: var(--btn-danger-bg);    border-color: var(--btn-danger-border);   color: var(--btn-danger-text); }
+.btn.primary  { background: var(--btn-primary-bg);  border-color: var(--btn-primary-border); }
+.btn.success  { background: var(--btn-success-bg);  border-color: var(--btn-success-border); color: var(--btn-success-text); }
+.btn.secondary{ background: var(--btn-secondary-bg);border-color: var(--btn-secondary-border); }
+.btn.danger   { background: var(--btn-danger-bg);   border-color: var(--btn-danger-border);   color: var(--btn-danger-text); }
 
-/* テーマ切替ボタンのアクセシビリティ */
-#theme-toggle.btn { transition: background-color .18s ease, color .18s ease, border-color .18s ease, transform .06s ease; }
-#theme-toggle.btn:hover { filter: brightness(1.06); text-decoration: underline; }
-#theme-toggle.btn:active { transform: translateY(1px); }
-#theme-toggle.btn:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+.btn:hover { filter: brightness(1.04); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
 
-/* ===================================================================
-   テーブル（ストライプ＆ホバー）
-   =================================================================== */
-.table { border-collapse: collapse; width: 100%; }
-.table th, .table td { border: 1px solid var(--table-border); padding: 10px; color: var(--text); }
-.table th { background: var(--table-head-bg); text-align: left; }
-.table.striped tbody tr:nth-child(odd)  { background: var(--table-odd-bg); }
-.table.striped tbody tr:nth-child(even) { background: var(--table-even-bg); }
+/* テーマ切替ボタンの微調整（視認性UP） */
+#theme-toggle.btn:hover { text-decoration: underline; }
+
+/* ---------------------------------
+ * 6) テーブル
+ * --------------------------------- */
+table { border-collapse: collapse; width: 100%; transition: background-color .18s ease, color .18s ease, border-color .18s ease; }
+th, td { border: 1px solid var(--table-border); padding: 10px; color: var(--text); }
+th { background: var(--table-head-bg); text-align: left; }
+
+.table.striped tbody tr:nth-child(odd) { background: var(--table-odd-bg); }
+.table.striped tbody tr:nth-child(even){ background: var(--table-even-bg); }
 .table.hover tbody tr:hover { background: var(--table-hover-bg); }
-
-/* スマホで横スクロール可 */
+.table.compact th, .table.compact td { padding: 6px 8px; }
 .table-wrap { overflow-x: auto; }
 
-/* ===================================================================
-   カード（トップのメニューカードなど）
-   =================================================================== */
+/* ---------------------------------
+ * 7) カード（トップページ）
+ * --------------------------------- */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -181,106 +196,103 @@ a.btn, button.btn, input[type="submit"].btn {
 }
 .card {
   border: 1px solid var(--card-border);
-  border-radius: 14px;
+  border-radius: 12px;
   padding: var(--card-pad);
   background: var(--card-bg);
   box-shadow: var(--shadow);
-  transition: transform .12s ease, box-shadow .12s ease;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .18s ease, color .18s ease, border-color .18s ease;
 }
 .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
 .card h3 { margin: 0 0 8px; font-size: 20px; }
 .card p  { margin: 0 0 12px; color: #555; font-size: 15px; }
-.card .actions .btn { margin-right: 8px; }
 
-/* ===================================================================
-   ロゴ（グラデ＆バッジ）
-   =================================================================== */
+/* ---------------------------------
+ * 8) ロゴ
+ * --------------------------------- */
 .logo { margin: 0; font-size: 75px; line-height: 1.1; font-weight: 800; letter-spacing: .2px; }
 .logo a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 0; }
 .logo .accent {
   background: linear-gradient(90deg, #2563eb, #7c3aed);
-  -webkit-background-clip: text; background-clip: text;
-  color: transparent; -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 .logo .tail {
   background: linear-gradient(90deg, #10b981, #06b6d4);
-  -webkit-background-clip: text; background-clip: text;
-  color: transparent; -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 .logo .hyphen { margin: 0 6px 0 4px; color: #9ca3af; }
 .logo .badge {
-  font-size: .25em; font-weight: 700; padding: 4px 8px; border-radius: 999px;
-  background: #054eec; color: #fff; border: 1px solid rgba(249, 6, 6, 0.06);
-  line-height: 1; position: relative; top: -1.40em;
+  font-size: .25em;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #054eec;
+  color: #fff;
+  border: 1px solid rgba(249,6,6,0.06);
+  line-height: 1;
+  position: relative;
+  top: -1.40em;
 }
 .logo a:hover .badge { background: #0f172a; }
 .logo a:hover { filter: brightness(1.02); }
+@media (max-width: 480px) { .logo { font-size: 44px; } }
 
-/* スマホ時はロゴを控えめに */
-@media (max-width: 480px) {
-  .logo { font-size: 44px; }
-}
-
-/* ===================================================================
-   フォーム（テキスト入力）
-   =================================================================== */
+/* ---------------------------------
+ * 9) フォーム（共通）
+ * --------------------------------- */
 form label { display: block; margin: 12px 0 4px; }
 input[type="text"] {
   width: 260px; padding: 6px 10px;
   border: 1px solid var(--input-border);
-  border-radius: 6px;
-  background: var(--input-bg);
-  color: var(--text);
+  border-radius: 6px; background: var(--input-bg); color: var(--text);
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
 }
-input[type="text"]:focus {
-  outline: 2px solid #60a5fa; outline-offset: 2px;
-}
+input[type="text"]:focus { outline: 2px solid #60a5fa; outline-offset: 2px; }
 
-/* ===================================================================
-   日付入力：カレンダーアイコンを自前で配置（ライト/ダーク両対応）
-   - HTML 側は <div class="date-field"><input type="date" class="input-date">…</div>
-   - 右端のボタンは .date-btn（クリックでカレンダーを開く）
-   =================================================================== */
+/* ---------------------------------
+ * 10) 日付入力（ネイティブボタンを隠して自前アイコン）
+ *     - HTMLは <div class="date-field"><input type="date" class="input-date">... を前提
+ * --------------------------------- */
 
-/* ラッパー：絶対配置の基準にする */
-.date-field {
-  position: relative;
-  display: inline-block; /* ラッパ幅 = 中の input 幅に合わせる */
-}
+/* ラッパー（相対配置） */
+.date-field { position: relative; display: inline-block; }
 
-/* 入力本体：見た目統一＋アイコン分の余白を確保 */
-.date-field .input-date {
-  display: block;
+/* 入力本体：アイコン分の余白を確保 */
+.input-date {
   appearance: none;
   -webkit-appearance: none;
   background-color: var(--input-bg);
   color: var(--text);
   width: 260px;
-  line-height: 1.4;
   padding: 6px 10px;
-  padding-right: 40px;            /* ← 右側にアイコン分の余白 */
+  padding-right: 40px;            /* 右側にアイコン分の余白 */
   border: 1px solid var(--input-border);
   border-radius: 6px;
-  box-sizing: border-box;
+  line-height: 1.4;               /* 垂直位置の安定に寄与 */
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
 }
+.input-date:focus { outline: 2px solid #60a5fa; outline-offset: 2px; }
 
-/* WebKit のネイティブカレンダーアイコンを隠す（自前で出すため） */
+/* WebKitのネイティブカレンダーボタンを消す */
 .input-date::-webkit-calendar-picker-indicator {
   display: none !important;
   opacity: 0 !important;
   -webkit-appearance: none;
 }
 
-/* クリック可能なカレンダーボタン（見た目はCSS変数のSVG） */
+/* 自前のカレンダーボタン（クリック可） */
 .date-btn {
   position: absolute;
-  right: var(--date-icon-right);
-  top: calc(50% + var(--date-icon-shift));
+  right: 10px;
+  top: calc(50% + var(--date-icon-shift)); /* 値を変えて微調整OK */
   transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  border: 0;
-  padding: 0;
+  width: 22px; height: 22px;
+  border: 0; padding: 0;
   background: transparent;
   cursor: pointer;
   opacity: .9;
@@ -288,26 +300,15 @@ input[type="text"]:focus {
 .date-btn::before {
   content: "";
   display: block;
-  width: 18px;
-  height: 18px;
+  width: 18px; height: 18px;
   background-image: var(--calendar-icon);
   background-repeat: no-repeat;
   background-size: 18px 18px;
 }
 
-/* フォーカス時の見やすいリング */
-.input-date:focus { outline: 2px solid #60a5fa; outline-offset: 2px; }
-
-/* ===================================================================
-   レスポンシブ（モバイル時は全体を控えめに）
-   =================================================================== */
-@media (max-width: 480px) {
-  :root {
-    --base-font: 17px;
-    --space: 24px;
-    --card-pad: 16px;
-    --btn-pad-y: 9px;
-    --btn-pad-x: 12px;
-  }
-  body { margin: 20px; }
+/* ---------------------------------
+ * 11) トランジション対象のまとめ
+ * --------------------------------- */
+.card, .btn, table, th, td {
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
