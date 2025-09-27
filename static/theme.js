@@ -35,13 +35,21 @@
   }
 
   // --- 任意: OSのテーマ変更を監視（localStorage 未設定時のみ追従したい場合）
-  const media = window.matchMedia('(prefers-color-scheme: dark)');
-  function syncToOS(e) {
-    if (localStorage.getItem(KEY)) return;    // ユーザーが一度でも明示選択していたら追従しない
-    if (e.matches) root.setAttribute('data-theme', 'dark');
-    else root.removeAttribute('data-theme');
-    updateLabel();
-  }
-  if (media.addEventListener) media.addEventListener('change', syncToOS);
-  else media.addListener(syncToOS);   // 旧ブラウザ互換
+const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+function syncToOS(e) {
+  if (localStorage.getItem(KEY)) return; // 既に手動選択があれば追従しない
+  if (e.matches) document.documentElement.setAttribute('data-theme','dark');
+  else document.documentElement.removeAttribute('data-theme');
+  updateLabel();
+}
+
+// まずは新しい書き方
+if (media.addEventListener) {
+  media.addEventListener('change', syncToOS);
+}
+// 古いブラウザ用のフォールバック（非推奨だが互換性のため）
+else if (media.addListener) {
+  media.addListener(syncToOS);
+}
 })();
