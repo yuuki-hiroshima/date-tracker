@@ -1,5 +1,5 @@
 
-# ========== 完成イメージ（登録機能を追加） ==========
+# ========== 完成イメージ（登録機能を追加） =========
 
 # 入力：
 #     ・コマンド引数で受け取る
@@ -240,40 +240,40 @@
 
 # ========== Pythonコード（一覧表示） ==========
 
-import argparse                     # コマンド引数を扱う標準ライブラリを読み込む
-from tracker_core import load_json   # JSON読み込み関数（壊れていても空{}を返す設計）
+# import argparse                     # コマンド引数を扱う標準ライブラリを読み込む
+# from tracker_core import load_json   # JSON読み込み関数（壊れていても空{}を返す設計）
 
-JSON_PATH = "data/event_log.json"    # データの保存場所（相対パス）
+# JSON_PATH = "data/event_log.json"    # データの保存場所（相対パス）
 
-def main():                          # CLIの入口となる関数
-    parser = argparse.ArgumentParser(    # 引数パーサを1つ作成
-        description="--list で登録一覧を表示します"
-    )
-    parser.add_argument(                 # --list は値を持たないフラグ
-        "--list",
-        action="store_true",
-        help="登録一覧を表示"
-    )
-    args = parser.parse_args()           # 実行時引数を解析
+# def main():                          # CLIの入口となる関数
+#     parser = argparse.ArgumentParser(    # 引数パーサを1つ作成
+#         description="--list で登録一覧を表示します"
+#     )
+#     parser.add_argument(                 # --list は値を持たないフラグ
+#         "--list",
+#         action="store_true",
+#         help="登録一覧を表示"
+#     )
+#     args = parser.parse_args()           # 実行時引数を解析
 
-    if not args.list:                    # --list が指定されていない場合
-        parser.print_help()              # 使い方を表示して
-        return                           # 終了（CLIなのでループはしない）
+#     if not args.list:                    # --list が指定されていない場合
+#         parser.print_help()              # 使い方を表示して
+#         return                           # 終了（CLIなのでループはしない）
 
-    records = load_json(JSON_PATH)       # データを読み込む（無ければ {}）
+#     records = load_json(JSON_PATH)       # データを読み込む（無ければ {}）
 
-    if not records:                      # 0件ならメッセージを出して終了
-        print("登録はありません。")
-        return
+#     if not records:                      # 0件ならメッセージを出して終了
+#         print("登録はありません。")
+#         return
 
-    print("=== 登録一覧 ===")            # 見出し
-    for name in sorted(records):         # 名前の昇順で並べて
-        print(f"{name}: {records[name]}")# 1行ずつ「名前: 日付」を表示
+#     print("=== 登録一覧 ===")            # 見出し
+#     for name in sorted(records):         # 名前の昇順で並べて
+#         print(f"{name}: {records[name]}")# 1行ずつ「名前: 日付」を表示
 
-    print(f"合計 {len(records)} 件")     # ループの外で合計件数を1回だけ表示
+#     print(f"合計 {len(records)} 件")     # ループの外で合計件数を1回だけ表示
 
-if __name__ == "__main__":               # スクリプト直実行時のみ
-    main()                               # main() を起動
+# if __name__ == "__main__":               # スクリプト直実行時のみ
+#     main()                               # main() を起動
 
 # Cursorから追記
 
