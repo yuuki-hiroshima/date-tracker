@@ -7,8 +7,11 @@
 
     <label for="on_date">比較日（YYYY-MM-DD）</label>
     <div class="date-field">
+      <!-- ※ name は必ず on_date にする -->
       <input type="date" id="on_date" name="on_date" class="input-date" required>
-      <button type="button" class="date-btn" aria-label="日付を選択"></button>
+      <button type="button" class="date-btn"
+              onclick="this.previousElementSibling.showPicker && this.previousElementSibling.showPicker()"
+              aria-label="カレンダーを開く"></button>
     </div>
 
     <div>
