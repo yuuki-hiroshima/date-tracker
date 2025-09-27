@@ -4,12 +4,21 @@
 <html lang="ja">
     <head>
         <script>
-            (function() {
-                try {
-                    var t = localStorage.getItem('theme');
-                    if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-                } catch (e) {}
-            })();
+          (function () {
+            try {
+              var t = localStorage.getItem('theme'); // 'dark' or 'light' or null
+              var root = document.documentElement;
+              if (t === 'dark') {
+                root.setAttribute('data-theme','dark');
+              } else if (t === 'light') {
+                root.removeAttribute('data-theme');
+              } else {
+                // 未保存時は OS 設定に追従
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) root.setAttribute('data-theme','dark');
+              }
+            } catch(e) {}
+          })();
         </script>
         <meta charset="utf-8">
         <title>Date-Tracker</title>

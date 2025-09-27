@@ -426,6 +426,12 @@ h2 { font-size: calc(1.1rem + 0.4vw); margin: 0 0 12px; }
   /* table stripe/hover 目視差が小さい時はここをさらに広げる */
 }
 
+/* ボタン用の変数を軽く補正 */
+:root[data-theme="dark"] {
+  --btn-bg: #1b2948;
+  --btn-border: #384e7d;
+}
+
 /* 切替時にスムーズなトランジション */
 html, body, .card, .btn, table, th, td {
     transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
@@ -449,3 +455,29 @@ input[type="text"]:focus, .input-date:focus {
 :root[data-theme="dark"] .flash.success { background:#10251a; color:#b7f8cc; border:1px solid #2b6e50; }
 :root[data-theme="dark"] .flash.error   { background:#2a1215; color:#ffc3c6; border:1px solid #7f3a44; }
 :root[data-theme="dark"] .flash.info    { background:#0f2338; color:#c8dcff; border:1px solid #3a5f9f; }
+
+/* テーマ切り替えボタンの調整 */
+#theme-toggle.btn {
+  transition: background-color .18s ease, color .18s ease,
+              border-color .18s ease, transform .06s ease;
+}
+#theme-toggle.btn:hover {
+  filter: brightness(1.06);
+}
+#theme-toggle.btn:active {
+  transform: translateY(1px);
+}
+#theme-toggle.btn:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* ダーク時は少しコントラストを上げる */
+:root[data-theme="dark"] #theme-toggle.btn {
+  border-color: #3a4d79;
+}
+
+/* 低視力/色覚配慮：ホバー時に下線で変化を補助 */
+#theme-toggle.btn:hover {
+  text-decoration: underline;
+}
